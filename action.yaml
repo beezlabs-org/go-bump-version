@@ -19,6 +19,12 @@ runs:
       run: |
         echo ${{ inputs.new-version }} > VERSION
       shell: bash
+
+    - name: Bump image tags in helm values
+      run: |
+        yq -i '.image.tag = "${{ inputs.new-version }}"' './charts/values.dev.yaml'
+        yq -i '.image.tag = "${{ inputs.new-version }}"' './charts/values.prod.yaml'
+      shell: bash
     
     - name: Commit Changes
       env:
