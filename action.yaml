@@ -7,9 +7,22 @@ inputs:
   new-version:
     description: The new version to bump to
     required: true
+  is-lib:
+    description: Whether the project is a library
+    required: false
+    default: "false"
 runs:
   using: composite
   steps:
+    - name: Check if version starts with v for a library
+      if: ${{ inputs.is-lib }} == "true"
+      run: |
+        if [[ ${{ inputs.new-version }} != v* ]]; then
+          echo "Version for a go library should start with v like v1.0.0 and not 1.0.0"
+          exit 1
+        fi
+      shell: bash
+    
     - name: Checkout
       uses: actions/checkout@v2
       with:
